@@ -4,4 +4,4 @@ let codes={1:{np:3, run:(a,b,c)=>prog[c]=a+b},2:{np:3, run:(a,b,c)=>prog[c]=a*b}
 let getCmd=ptr=>parseInt(prog[ptr].toString().substr(-2))
 let getParams=ptr=>prog.slice(ptr+1,ptr+1+codes[getCmd(ptr)].np).map((v,i)=>prog[ptr].toString().charAt(prog[ptr].toString().length-3-i)=="1"||i==codes[getCmd(ptr)].np-1?v:prog[v])
 let pp=0;
-while(prog[pp]!=99999&&pp<prog.length){codes[getCmd(pp)].run(...getParams(pp));pp+=1+codes[getCmd(pp)].np}
+while(getCmd(pp)!=99&&pp<prog.length){codes[getCmd(pp)].run(...getParams(pp));pp+=1+codes[getCmd(pp)].np}
