@@ -1,4 +1,4 @@
-//Part 1 non working
+//Part 1
 
 let pp=0;
 let rb=0;
@@ -25,38 +25,76 @@ let getParams=ptr=>prog.slice(ptr+1,ptr+1+codes[getCmd(ptr)].np).map((v,i)=>{
 let prog=document.getElementsByTagName("pre")[0].innerText.split(",").map(v=>parseInt(v));
 let output=null,input=0;
 let steps=0;
-let visited=[[0,0]]
+let x=0,y=0;
+let visited=[[x,y]]
 let queue=[
-    [0,1,1,pp,rb,prog.slice(0)],
-    [0,-1,2,pp,rb,prog.slice(0)],
-    [-1,0,3,pp,rb,prog.slice(0)],
-    [1,0,4,pp,rb,prog.slice(0)]
+    [x,y+1,1,pp,rb,prog.slice(0)],
+    [x,y-1,2,pp,rb,prog.slice(0)],
+    [x-1,y,3,pp,rb,prog.slice(0)],
+    [x+1,y,4,pp,rb,prog.slice(0)]
 ];
 let test=p=>!queue2.some(v=>v[0]==p[0]&&v[1]==p[1])&&!visited.some(v=>v[0]==p[0]&&v[1]==p[1])
 let queue2=[];
 try {
-    while (queue.length&&steps<100) {
+    while (queue.length) {
 	queue.forEach(p=>{
 	    pp=p[3];
 	    rb=p[4];
 	    prog=p[5];
 	    input=p[2];
+	    x=p[0];
+	    y=p[1];
 	    while(getCmd(pp)!=99&&pp<prog.length&&output==null) codes[getCmd(pp)].run(...getParams(pp));
 	    if (output==1) {
-		if(test([p[0],p[1]+1])) queue2.push([p[0],p[1]+1,1,pp,rb,prog.slice(0)]);
-		if(test([p[0],p[1]-1])) queue2.push([p[0],p[1]-1,2,pp,rb,prog.slice(0)]);
-		if(test([p[0]-1,p[1]])) queue2.push([p[0]-1,p[1],3,pp,rb,prog.slice(0)]);
-		if(test([p[0]+1,p[1]])) queue2.push([p[0]+1,p[1],4,pp,rb,prog.slice(0)]);
+		if(test([x,y+1])) queue2.push([x,y+1,1,pp,rb,prog.slice(0)]);
+		if(test([x,y-1])) queue2.push([x,y-1,2,pp,rb,prog.slice(0)]);
+		if(test([x-1,y])) queue2.push([x-1,y,3,pp,rb,prog.slice(0)]);
+		if(test([x+1,y])) queue2.push([x+1,y,4,pp,rb,prog.slice(0)]);
 	    } else if (output==2) {
-		throw(new Exception);
+		throw "RESULTAT 1: "+(steps+1);
 	    }
 	    output=null;
 	    visited.push([p[0],p[1]]);
 	})
 	queue=JSON.parse(JSON.stringify(queue2));
+	queue2=[];
 	steps++;
 	console.log("step:"+steps+" queue:"+queue.length)
     }
 } catch(e) {
     console.log(e);
+}
+
+// Part 2
+visited=[[x,y]];
+queue=[
+    [x,y+1,1,pp,rb,prog.slice(0)],
+    [x,y-1,2,pp,rb,prog.slice(0)],
+    [x-1,y,3,pp,rb,prog.slice(0)],
+    [x+1,y,4,pp,rb,prog.slice(0)]
+];
+queue2=[];
+steps=0;
+while (queue.length) {
+    queue.forEach(p=>{
+	pp=p[3];
+	rb=p[4];
+	prog=p[5];
+	input=p[2];
+	x=p[0];
+	y=p[1];
+	while(getCmd(pp)!=99&&pp<prog.length&&output==null) codes[getCmd(pp)].run(...getParams(pp));
+	if (output==1) {
+	    if(test([x,y+1])) queue2.push([x,y+1,1,pp,rb,prog.slice(0)]);
+	    if(test([x,y-1])) queue2.push([x,y-1,2,pp,rb,prog.slice(0)]);
+	    if(test([x-1,y])) queue2.push([x-1,y,3,pp,rb,prog.slice(0)]);
+	    if(test([x+1,y])) queue2.push([x+1,y,4,pp,rb,prog.slice(0)]);
+	}
+	output=null;
+	visited.push([p[0],p[1]]);
+    })
+    queue=JSON.parse(JSON.stringify(queue2));
+    queue2=[];
+    steps++;
+    console.log("step:"+steps+" queue:"+queue.length)
 }
